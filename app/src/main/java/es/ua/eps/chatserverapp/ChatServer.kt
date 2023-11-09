@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.Enumeration
+import kotlin.concurrent.thread
 
 class ChatServer(private val activity: MainActivity) {
     private val socketServerPORT = 8080
@@ -42,9 +43,9 @@ class ChatServer(private val activity: MainActivity) {
                 count++
                 message += "#$count from ${socket?.inetAddress}:${socket?.port}\n"
 
-                activity.runOnUiThread {
-                    activity.msg.text = message
-                }
+//                activity.runOnUiThread {
+//                    activity.msg.text = message
+//                }
 
                 GlobalScope.launch(Dispatchers.IO) {
                     val socketServerReplyThread = SocketServerReplyThread(socket, count)
@@ -70,17 +71,17 @@ class ChatServer(private val activity: MainActivity) {
 
                 message += "replayed: $msgReply\n"
 
-                activity.runOnUiThread {
-                    activity.msg.text = message
-                }
+//                activity.runOnUiThread {
+//                    activity.msg.text = message
+//                }
             } catch (e: IOException) {
                 e.printStackTrace()
                 message += "Something wrong! ${e.toString()}\n"
             }
 
-            activity.runOnUiThread {
-                activity.msg.text = message
-            }
+//            activity.runOnUiThread {
+//                activity.msg.text = message
+//            }
         }
     }
 
@@ -108,4 +109,12 @@ class ChatServer(private val activity: MainActivity) {
     fun isRunning(): Boolean {
         return serverSocket != null && !serverSocket!!.isClosed
     }
+
+//    fun sendMessage(message: String) {
+//        thread {
+//            val messageBytes = message.toByteArray(Charsets.UTF_8)
+//            outputStream?.write(messageBytes)
+//            outputStream?.flush()
+//        }
+//    }
 }
